@@ -1,18 +1,17 @@
 import { app, BrowserWindow } from "electron";
 import dotenv from "dotenv";
+import "babel-polyfill";
 import bot from "./bot";
 
 dotenv.config();
 
 bot.connect();
 
-const port = process.env.PORT || 3000;
-
 let mainWindow;
 const createWindow = () => {
 	mainWindow = new BrowserWindow({ width: 800, height: 600 });
 
-	mainWindow.loadURL(`http://localhost:${port}`);
+	mainWindow.loadURL(`http://localhost:${process.env.PORT || 3000}`);
 
 	mainWindow.on("closed", () => {
 		mainWindow = null;

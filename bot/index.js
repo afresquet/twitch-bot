@@ -1,13 +1,10 @@
 import bot from "./client";
+import initializeFeatures from "../helpers/initializeFeatures";
+
+initializeFeatures(bot);
 
 bot.on("connected", () =>
 	bot.action(process.env.CHANNEL, "is up and running...")
 );
-
-bot.on("chat", (channel, userstate, message, self) => {
-	if (self) return;
-
-	bot.say(channel, message);
-});
 
 export default bot;

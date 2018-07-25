@@ -12,12 +12,16 @@
 		"dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron -r babel-register .\""
 	},
 	"dependencies": {
+		"babel-polyfill": "^6.26.0",
 		"dotenv": "^6.0.0",
 		"electron": "^2.0.5",
 		"nedb": "^1.8.0",
+		"prop-types": "^15.6.2",
 		"react": "^16.4.1",
 		"react-dom": "^16.4.1",
 		"react-scripts": "1.1.4",
+		"semantic-ui-css": "^2.3.3",
+		"semantic-ui-react": "^0.82.1",
 		"tmi.js": "^1.2.1"
 	},
 	"devDependencies": {
