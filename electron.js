@@ -1,7 +1,10 @@
 import { app, BrowserWindow } from "electron";
 import dotenv from "dotenv";
+import bot from "./bot";
 
 dotenv.config();
+
+bot.connect();
 
 const port = process.env.PORT || 3000;
 
