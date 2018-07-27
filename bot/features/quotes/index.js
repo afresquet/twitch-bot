@@ -1,7 +1,41 @@
-module.exports = bot => {
-	bot.on("chat", (channel, userstate, message, self) => {
-		if (self) return;
+import messageParser from "../../../helpers/messageParser";
+import { addQuote, findQuote } from "./helpers/db";
 
-		if (message === "!quote") bot.say(channel, "this is a quote");
+module.exports = (bot, db) => {
+	db.loadDatabase(err => err && console.log(err));
+
+	bot.on("chat", async (channel, { mod, badges }, message, self) => {
+		try {
+			if (self) return;
+
+			const { command, rest } = messageParser(message);
+
+			switch (command) {
+				case "!quote": {
+					const number = parseInt(rest.split(" ")[0], 10);
+
+					const quote = await findQuote(db, !Number.isNaN(number) && number);
+
+					bot.say(channel, quote);
+
+					break;
+				}
+
+				case "!addquote": {
+					if (!(badges.broadcaster || mod) || !rest) return;
+
+					const number = await addQuote(db, rest);
+
+					bot.say(channel, `The quote "${rest}" was added as quote #${number}`);
+
+					break;
+				}
+
+				default:
+					break;
+			}
+		} catch (err) {
+			bot.say(channel, err.message);
+		}
 	});
 };

@@ -1,5 +1,5 @@
-/* eslint-disable global-require,import/no-dynamic-require */
-import { resolve } from "path";
+import { resolve, join } from "path";
+import Datastore from "nedb";
 import getDirectories from "./getDirectories";
 
 /**
@@ -10,7 +10,14 @@ export default async bot => {
 	try {
 		const features = await getDirectories("./bot/features");
 
-		features.forEach(path => require(resolve(path))(bot));
+		features.forEach(directory => {
+			const path = resolve(directory);
+
+			const db = new Datastore(join(path, "index.db"));
+
+			/* eslint-disable-next-line global-require,import/no-dynamic-require */
+			require(path)(bot, db);
+		});
 	} catch (e) {
 		console.log(e);
 	}
