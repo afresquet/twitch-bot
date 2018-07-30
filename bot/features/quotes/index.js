@@ -26,7 +26,7 @@ module.exports = (bot, db) => {
 
 					const number = await addQuote(db, rest);
 
-					bot.say(channel, `The quote "${rest}" was added as quote #${number}`);
+					bot.say(channel, `Quote #${number} added!`);
 
 					break;
 				}
@@ -38,4 +38,6 @@ module.exports = (bot, db) => {
 			bot.say(channel, err.message);
 		}
 	});
+
+	return "Quotes";
 };
