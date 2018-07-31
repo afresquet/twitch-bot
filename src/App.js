@@ -3,13 +3,9 @@ import Dropzone from "react-dropzone";
 import { ipcRenderer } from "./helpers/react-electron";
 
 export default class App extends Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			features: []
-		};
-	}
+	state = {
+		features: []
+	};
 
 	componentDidMount() {
 		ipcRenderer.send("requestFeatures");
@@ -18,17 +14,15 @@ export default class App extends Component {
 		);
 	}
 
-	onDrop(files) {
+	onDrop = files => {
 		if (files.length > 1) {
 			console.error("only folders");
 			return;
 		}
 		ipcRenderer.send("folder", files[0].path);
-	}
+	};
 
-	openFeatureUI(name) {
-		return () => ipcRenderer.send(name);
-	}
+	openFeatureUI = name => () => ipcRenderer.send(name);
 
 	render() {
 		const { features } = this.state;
