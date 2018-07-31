@@ -10,7 +10,7 @@ import createUIWindow from "./createUIWindow";
  */
 export default async bot => {
 	try {
-		const features = await getDirectories("./bot/features");
+		const features = await getDirectories(`${__dirname}/../bot/features`);
 
 		const ui = features.map(({ name, directory }) => {
 			const path = resolve(directory);

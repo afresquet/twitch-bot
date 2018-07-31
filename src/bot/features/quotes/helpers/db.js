@@ -1,6 +1,5 @@
-function getRandomInt(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+const getRandomInt = (min, max) =>
+	Math.floor(Math.random() * (max - min + 1)) + min;
 
 export const addQuote = async (db, quote) =>
 	new Promise((resolve, reject) => {
@@ -41,7 +40,7 @@ export const findQuote = async (db, number) =>
 		}
 
 		if (number) getQuote(number);
-		else
+		else {
 			db.count({}, (err, count) => {
 				if (err) reject(err);
 
@@ -49,4 +48,5 @@ export const findQuote = async (db, number) =>
 
 				getQuote(randomQuote);
 			});
+		}
 	});

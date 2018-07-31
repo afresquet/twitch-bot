@@ -1,19 +1,34 @@
 import React, { Component } from "react";
-import { ipcRenderer } from "./helpers/electron";
+import Dropzone from "react-dropzone";
+import { ipcRenderer } from "./helpers/react-electron";
 
-class App extends Component {
-	state = {
-		features: []
-	};
+export default class App extends Component {
+	constructor(props) {
+		super(props);
 
-	componentDidMount = () => {
+		this.state = {
+			features: []
+		};
+	}
+
+	componentDidMount() {
 		ipcRenderer.send("requestFeatures");
 		ipcRenderer.on("sendFeatures", (e, features) =>
 			this.setState({ features })
 		);
-	};
+	}
 
-	openFeatureUI = name => () => ipcRenderer.send(name);
+	onDrop(files) {
+		if (files.length > 1) {
+			console.error("only folders");
+			return;
+		}
+		ipcRenderer.send("folder", files[0].path);
+	}
+
+	openFeatureUI(name) {
+		return () => ipcRenderer.send(name);
+	}
 
 	render() {
 		const { features } = this.state;
@@ -21,13 +36,16 @@ class App extends Component {
 			<div>
 				<h1>Twitch Bot</h1>
 				{features.map(({ display, name }) => (
-					<button type="button" onClick={this.openFeatureUI(name)}>
+					<button type="button" onClick={this.openFeatureUI(name)} key={name}>
 						{display}
 					</button>
 				))}
+				<Dropzone onDrop={this.onDrop}>
+					<h1>Drop</h1>
+					<h1>files</h1>
+					<h1>here</h1>
+				</Dropzone>
 			</div>
 		);
 	}
 }
-
-export default App;
