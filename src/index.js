@@ -5,9 +5,6 @@ import installExtension, {
 import { enableLiveReload } from "electron-compile";
 import bot from "./bot";
 
-// Connect the bot.
-bot.connect();
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -44,7 +41,11 @@ const createWindow = async () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+app.on("ready", () => {
+	createWindow();
+
+	bot.connect();
+});
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {

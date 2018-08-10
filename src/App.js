@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import Dropzone from "react-dropzone";
 import { ipcRenderer } from "./helpers/react-electron";
+import AsyncComponent from "./react/components/helpers/AsyncComponent";
 
 export default class App extends Component {
 	state = {
-		features: []
+		features: [],
+		featurePath: null
 	};
 
 	componentDidMount() {
@@ -14,31 +15,20 @@ export default class App extends Component {
 		);
 	}
 
-	onDrop = files => {
-		if (files.length > 1) {
-			console.error("only folders");
-			return;
-		}
-		ipcRenderer.send("folder", files[0].path);
-	};
-
-	openFeatureUI = name => () => ipcRenderer.send(name);
+	openFeatureUI = react => () => this.setState({ featurePath: react });
 
 	render() {
-		const { features } = this.state;
+		const { features, featurePath } = this.state;
+
 		return (
 			<div>
 				<h1>Twitch Bot</h1>
-				{features.map(({ display, name }) => (
-					<button type="button" onClick={this.openFeatureUI(name)} key={name}>
+				{features.map(({ display, name, react }) => (
+					<button type="button" onClick={this.openFeatureUI(react)} key={name}>
 						{display}
 					</button>
 				))}
-				<Dropzone onDrop={this.onDrop}>
-					<h1>Drop</h1>
-					<h1>files</h1>
-					<h1>here</h1>
-				</Dropzone>
+				{featurePath && <AsyncComponent path={featurePath} />}
 			</div>
 		);
 	}

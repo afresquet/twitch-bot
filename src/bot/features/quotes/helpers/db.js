@@ -1,7 +1,7 @@
 const getRandomInt = (min, max) =>
 	Math.floor(Math.random() * (max - min + 1)) + min;
 
-export const addQuote = async (db, quote) =>
+export const addQuote = (db, quote) =>
 	new Promise((resolve, reject) => {
 		db.update(
 			{ _id: "__autoid__" },
@@ -17,7 +17,7 @@ export const addQuote = async (db, quote) =>
 		);
 	});
 
-export const findQuote = async (db, number) =>
+export const findQuote = (db, number) =>
 	new Promise((resolve, reject) => {
 		function getQuote(_id) {
 			db.findOne({ _id }, (err, doc) => {
