@@ -39,5 +39,8 @@ module.exports = (bot, db) => {
 		}
 	});
 
-	return "Quotes";
+	return {
+		name: "Quotes",
+		icon: "ChatBubbleOutline"
+	};
 };

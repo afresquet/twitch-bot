@@ -11,6 +11,6 @@ export default function createClient(userData, botData) {
 			username: botData.account,
 			password: `oauth:${botData.password}`
 		},
-		channels: [userData.account, "vessed"]
+		channels: [userData.account]
 	});
 }

@@ -1,9 +1,5 @@
 const React = require("react");
 
-class App extends React.Component {
-	render() {
-		return <div>Quote Feature</div>;
-	}
-}
+const Quotes = props => <div {...props}>Quote Feature</div>;
 
-module.exports = App;
+module.exports = Quotes;

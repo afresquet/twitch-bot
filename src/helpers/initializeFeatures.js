@@ -16,11 +16,10 @@ export default async bot => {
 
 			const db = new Datastore(join(path, "index.db"));
 
-			const display = await require(path)(bot, db);
+			const featureData = await require(path)(bot, db);
 
 			return {
-				name,
-				display,
+				...featureData,
 				react: join(path, "react.js")
 			};
 		});
