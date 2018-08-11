@@ -1,10 +1,18 @@
-import bot from "./client";
+import keytar from "keytar";
+import createClient from "./client";
 import initializeFeatures from "../helpers/initializeFeatures";
 
-initializeFeatures(bot);
+export default async function loadBot() {
+	const [userCredentials] = await keytar.findCredentials("TwitchBot_User");
+	const [botCredentials] = await keytar.findCredentials("TwitchBot_Bot");
 
-bot.on("connected", () =>
-	bot.action(process.env.CHANNEL, "is up and running...")
-);
+	const bot = createClient(userCredentials, botCredentials);
 
-export default bot;
+	initializeFeatures(bot);
+
+	bot.on("connected", () =>
+		bot.action(userCredentials.account, "is up and running...")
+	);
+
+	return bot;
+}

@@ -1,17 +1,16 @@
 import { client as Client } from "tmi.js";
-import dotenv from "dotenv";
 
-dotenv.config();
-
-export default new Client({
-	options: { debug: true },
-	connection: {
-		secure: true,
-		reconnect: true
-	},
-	identity: {
-		username: process.env.BOT_USERNAME,
-		password: `oauth:${process.env.BOT_PASSWORD}`
-	},
-	channels: [process.env.CHANNEL]
-});
+export default function createClient(userData, botData) {
+	return new Client({
+		options: { debug: true },
+		connection: {
+			secure: true,
+			reconnect: true
+		},
+		identity: {
+			username: botData.account,
+			password: `oauth:${botData.password}`
+		},
+		channels: [userData.account, "vessed"]
+	});
+}
