@@ -5,14 +5,22 @@ import TopBar from "./react/components/navigation/TopBar";
 import SideBar from "./react/components/navigation/SideBar";
 import AsyncComponent from "./react/components/helpers/AsyncComponent";
 
+const topBarHeight = 65;
+const sideBarWidth = 230;
+
 const styles = {
 	cointainer: {
 		display: "grid",
-		gridTemplateColumns: "210px auto"
+		gridTemplateColumns: `${sideBarWidth}px auto`
 	},
-	topBar: { gridColumn: "1 / -1" },
-	sideBar: { height: "100vh" },
-	main: { height: "100%", width: "100%" }
+	topBar: {
+		gridColumn: "1 / -1",
+		height: topBarHeight,
+		WebkitAppRegion: "drag",
+		WebkitUserSelect: "none"
+	},
+	sideBar: { height: `calc(100vh - ${topBarHeight}px)`, overflowY: "scroll" },
+	main: { height: `calc(100vh - ${topBarHeight}px)`, overflowY: "scroll" }
 };
 
 export default class App extends Component {
@@ -35,7 +43,7 @@ export default class App extends Component {
 
 		return (
 			<div style={styles.cointainer}>
-				<TopBar style={styles.topBar} />
+				<TopBar id="topbar" style={styles.topBar} />
 
 				<SideBar
 					features={features}
@@ -43,11 +51,9 @@ export default class App extends Component {
 					style={styles.sideBar}
 				/>
 
-				<div>
-					{featurePath && (
-						<AsyncComponent path={featurePath} style={styles.main} />
-					)}
-				</div>
+				{featurePath && (
+					<AsyncComponent path={featurePath} style={styles.main} />
+				)}
 			</div>
 		);
 	}

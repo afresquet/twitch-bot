@@ -1,7 +1,7 @@
 import { resolve, join } from "path";
-import Datastore from "nedb";
 import { ipcMain } from "electron";
 import getDirectories from "./getDirectories";
+import createDBLoader from "./createDBLoader";
 
 /**
  * Takes a bot and adds features to it.
@@ -9,14 +9,15 @@ import getDirectories from "./getDirectories";
  */
 export default async bot => {
 	try {
-		const features = await getDirectories(`${__dirname}/../bot/features`);
+		const directories = await getDirectories(`${__dirname}/../bot/features`);
 
-		const ui = features.map(async ({ name, directory }) => {
+		const features = directories.map(async directory => {
 			const path = resolve(directory);
 
-			const db = new Datastore(join(path, "index.db"));
+			const dbLoader = createDBLoader(join(path, "index.db"));
 
-			const featureData = await require(path)(bot, db);
+			const feature = require(path);
+			const featureData = await feature(bot, dbLoader);
 
 			return {
 				...featureData,
@@ -25,7 +26,7 @@ export default async bot => {
 		});
 
 		ipcMain.on("requestFeatures", async e =>
-			e.sender.send("sendFeatures", await Promise.all(ui))
+			e.sender.send("sendFeatures", await Promise.all(features))
 		);
 	} catch (e) {
 		console.log(e);

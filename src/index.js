@@ -32,9 +32,9 @@ const createWindow = async () => {
 
 app.on("ready", async () => {
 	bot = await loadBot();
-	bot.connect();
+	await bot.connect();
 
-	createWindow();
+	await createWindow();
 });
 
 app.on("window-all-closed", () => process.platform !== "darwin" && app.quit());

@@ -9,11 +9,9 @@ import { promisify } from "util";
 export default async source => {
 	const files = await promisify(readdir)(source);
 
-	const paths = files.map(name => ({ name, directory: join(source, name) }));
-
-	const directories = paths.filter(({ directory }) =>
-		lstatSync(directory).isDirectory()
-	);
+	const directories = files
+		.map(path => join(source, path))
+		.filter(directory => lstatSync(directory).isDirectory());
 
 	if (!directories.length)
 		throw new Error("The source path has no directories.");
