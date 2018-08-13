@@ -7,17 +7,17 @@ import createDBLoader from "./createDBLoader";
  * Takes a bot and adds features to it.
  * @param {Bot} bot The bot to modify.
  */
-export default async bot => {
+export default async function initializeFeatures(bot) {
 	try {
-		const directories = await getDirectories(`${__dirname}/../bot/features`);
+		const directories = await getDirectories(`${__dirname}/../features`);
 
 		const features = directories.map(async directory => {
 			const path = resolve(directory);
 
-			const dbLoader = createDBLoader(join(path, "index.db"));
+			const loadDB = createDBLoader(join(path, "index.db"));
 
-			const feature = require(path);
-			const featureData = await feature(bot, dbLoader);
+			const feature = require(path).default;
+			const featureData = await feature({ bot, loadDB });
 
 			return {
 				...featureData,
@@ -31,4 +31,4 @@ export default async bot => {
 	} catch (e) {
 		console.log(e);
 	}
-};
+}

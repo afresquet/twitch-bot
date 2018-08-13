@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { ipcRenderer } from "./helpers/react-electron";
 
-import TopBar from "./react/components/navigation/TopBar";
-import SideBar from "./react/components/navigation/SideBar";
-import AsyncComponent from "./react/components/helpers/AsyncComponent";
+import TopBar from "./components/navigation/TopBar";
+import SideBar from "./components/navigation/SideBar";
+import AsyncComponent from "./components/helpers/AsyncComponent";
 
 const topBarHeight = 65;
 const sideBarWidth = 230;

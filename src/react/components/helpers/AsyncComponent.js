@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const AsyncComponent = ({ path, ...props }) => {
-	const LoadedComponent = require(path);
+	const LoadedComponent = require(path).default;
 
 	return LoadedComponent ? <LoadedComponent {...props} /> : null;
 };

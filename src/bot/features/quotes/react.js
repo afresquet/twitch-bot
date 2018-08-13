@@ -1,5 +1,5 @@
-const React = require("react");
+import React from "react";
 
 const Quotes = props => <div {...props}>Quote Feature</div>;
 
-module.exports = Quotes;
+export default Quotes;

@@ -18,7 +18,7 @@ const createWindow = async () => {
 		height: 600
 	});
 
-	mainWindow.loadURL(`file://${__dirname}/index.html`);
+	mainWindow.loadURL(`file://${__dirname}/react/index.html`);
 
 	if (isDevMode) {
 		await installExtension(REACT_DEVELOPER_TOOLS);

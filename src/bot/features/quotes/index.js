@@ -1,8 +1,8 @@
-import messageParser from "../../../helpers/messageParser";
-import isMod from "../../../helpers/isMod";
+import messageParser from "../../helpers/messageParser";
+import isMod from "../../helpers/isMod";
 import { addQuote, findQuote } from "./helpers/db";
 
-module.exports = async (bot, loadDB) => {
+export default async ({ bot, loadDB }) => {
 	const featureData = {
 		name: "Quotes",
 		icon: "ChatBubbleOutline"

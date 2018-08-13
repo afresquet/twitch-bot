@@ -1,6 +1,6 @@
 import keytar from "keytar";
 import createClient from "./client";
-import initializeFeatures from "../helpers/initializeFeatures";
+import initializeFeatures from "./helpers/initializeFeatures";
 
 export default async function loadBot() {
 	const [userCredentials] = await keytar.findCredentials("TwitchBot_User");
