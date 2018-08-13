@@ -42,10 +42,10 @@ export default async ({ bot, loadDB }) => {
 		});
 
 		return featureData;
-	} catch (err) {
+	} catch (error) {
 		return {
 			...featureData,
-			err
+			error
 		};
 	}
 };

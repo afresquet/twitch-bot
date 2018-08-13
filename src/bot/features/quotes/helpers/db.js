@@ -42,7 +42,10 @@ export const findQuote = (db, number) =>
 		if (number) getQuote(number);
 		else {
 			db.count({}, (err, count) => {
-				if (err) reject(err);
+				if (err) {
+					reject(err);
+					return;
+				}
 
 				const randomQuote = getRandomInt(1, count - 1);
 
