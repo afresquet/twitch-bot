@@ -1,19 +1,19 @@
 import { loadSettings, editSettings } from "../helpers/db";
 
-export const onLoadData = (db, state) => async e => {
-	const settings = await loadSettings(db);
+export async function onLoadData() {
+	const settings = await loadSettings(this.db);
 
-	e.sender.send("data", {
+	this.ipcMain.send("data", {
 		state: {
-			...state.data,
-			voters: state.data.voters.length
+			...this.state,
+			voters: this.state.voters.length
 		},
 		settings
 	});
-};
+}
 
-export const onUpdateSettings = db => async (e, newSettings) => {
-	await editSettings(db, newSettings);
+export async function onUpdateSettings(_, newSettings) {
+	await editSettings(this.db, newSettings);
 
-	e.sender.send("settings-updated");
-};
+	this.ipcMain.send("settings-updated");
+}

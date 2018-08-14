@@ -2,19 +2,19 @@ import messageParser from "../../../helpers/messageParser";
 import { loadSettings } from "../helpers/db";
 import clamp from "../helpers/clamp";
 
-export default (bot, db, state, initialState, sendToRenderer) => async (
+export default async function onChat(
 	channel,
 	{ "user-id": userId },
 	message,
 	self
-) => {
+) {
 	if (self) return;
 
-	if (!state.data.pollActive) {
+	if (!this.state.pollActive) {
 		if (message === "!poll help") {
-			const settings = await loadSettings(db);
+			const settings = await loadSettings(this.db);
 
-			bot.say(
+			this.bot.say(
 				channel,
 				`The syntax to write a poll should be "!poll {question} - {option, option, option} - {time}" with as many options as you want (minimum 2), and time in seconds as a number (minimum ${
 					settings.minSeconds
@@ -38,7 +38,7 @@ export default (bot, db, state, initialState, sendToRenderer) => async (
 		)
 			return;
 
-		const settings = await loadSettings(db);
+		const settings = await loadSettings(this.db);
 
 		const time = clamp(
 			parseInt(seconds, 10),
@@ -49,7 +49,7 @@ export default (bot, db, state, initialState, sendToRenderer) => async (
 		const options = optionsGroup.split(", ");
 		if (options.length <= 1) return;
 
-		state.update({
+		this.updateState({
 			pollActive: true,
 			poll: options.reduce((acc, option) => {
 				acc[option.toLowerCase()] = 0;
@@ -58,50 +58,50 @@ export default (bot, db, state, initialState, sendToRenderer) => async (
 			}, {})
 		});
 
-		bot.say(
+		this.bot.say(
 			channel,
 			`New poll running for ${time} seconds: ${question} - Possible answers are: ${options.reduce(
 				(acc, option) => `${acc}, ${option}`
 			)}.`
 		);
 
-		sendToRenderer("poll-active", state.data.poll);
+		this.ipcMain.send("poll-active", this.state.poll);
 
 		setTimeout(() => {
-			sendToRenderer("poll-inactive");
+			this.ipcMain.send("poll-inactive");
 
-			if (state.data.voters.length === 0) {
-				bot.say(channel, "Poll ended with no votes, you boring fucks.");
+			if (this.state.voters.length === 0) {
+				this.bot.say(channel, "Poll ended with no votes, you boring fucks.");
 
-				state.update(initialState);
+				this.updateState(this.initialState);
 
 				return;
 			}
 
-			const resultsString = Object.entries(state.data.poll).reduce(
+			const resultsString = Object.entries(this.state.poll).reduce(
 				(acc, [key, value]) =>
 					acc ? `${acc}, ${key} [${value}]` : `${key} [${value}]`,
 				""
 			);
-			bot.say(channel, `Poll ended, results were: ${resultsString}`);
+			this.bot.say(channel, `Poll ended, results were: ${resultsString}`);
 
-			state.update(initialState);
+			this.updateState(this.initialState);
 		}, time * 1000);
 	} else {
 		const vote = message.toLowerCase();
 
 		if (
-			state.data.voters.find(voter => voter === userId) ||
-			!Object.prototype.hasOwnProperty.call(state.data.poll, vote)
+			this.state.voters.find(voter => voter === userId) ||
+			!Object.prototype.hasOwnProperty.call(this.state.poll, vote)
 		)
 			return;
 
-		state.update({
+		this.updateState({
 			poll: {
-				...state.data.poll,
-				[vote]: state.data.poll[vote] + 1
+				...this.state.poll,
+				[vote]: this.state.poll[vote] + 1
 			},
-			voters: [...state.data.voters, userId]
+			voters: [...this.state.voters, userId]
 		});
 	}
-};
+}

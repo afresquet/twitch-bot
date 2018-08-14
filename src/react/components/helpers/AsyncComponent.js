@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ipcRenderer } from "../../helpers/react-electron";
+import RendererProcess from "../../classes/RendererProcess";
 
-const AsyncComponent = ({ path, ...props }) => {
+const AsyncComponent = ({ path, prefix, ...props }) => {
 	const LoadedComponent = require(path).default;
+
+	const ipcRenderer = new RendererProcess(prefix);
 
 	return LoadedComponent ? (
 		<LoadedComponent {...props} ipcRenderer={ipcRenderer} />
@@ -11,7 +13,8 @@ const AsyncComponent = ({ path, ...props }) => {
 };
 
 AsyncComponent.propTypes = {
-	path: PropTypes.string.isRequired
+	path: PropTypes.string.isRequired,
+	prefix: PropTypes.string.isRequired
 };
 
 export default AsyncComponent;

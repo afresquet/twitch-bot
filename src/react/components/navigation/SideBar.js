@@ -11,11 +11,11 @@ const SideBar = ({ features, showFeatureUI, ...props }) => (
 
 		<Divider />
 
-		{features.map(({ name, icon, react }) => (
+		{features.map(({ name, icon, react, prefix }) => (
 			<ListButton
 				text={name}
 				icon={icon}
-				onClick={showFeatureUI(react)}
+				onClick={showFeatureUI(react, prefix)}
 				key={name}
 			/>
 		))}

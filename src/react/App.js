@@ -26,7 +26,10 @@ const styles = {
 export default class App extends Component {
 	state = {
 		features: [],
-		featurePath: null
+		currentFeature: {
+			path: "",
+			prefix: ""
+		}
 	};
 
 	componentDidMount() {
@@ -36,10 +39,14 @@ export default class App extends Component {
 		);
 	}
 
-	showFeatureUI = react => () => this.setState({ featurePath: react });
+	showFeatureUI = (path, prefix) => () =>
+		this.setState({ currentFeature: { path, prefix } });
 
 	render() {
-		const { features, featurePath } = this.state;
+		const {
+			features,
+			currentFeature: { path, prefix }
+		} = this.state;
 
 		return (
 			<div style={styles.cointainer}>
@@ -51,8 +58,8 @@ export default class App extends Component {
 					style={styles.sideBar}
 				/>
 
-				{featurePath && (
-					<AsyncComponent path={featurePath} style={styles.main} />
+				{path && (
+					<AsyncComponent path={path} prefix={prefix} style={styles.main} />
 				)}
 			</div>
 		);

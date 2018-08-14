@@ -1,8 +1,6 @@
 import { resolve, join } from "path";
-import { ipcMain } from "electron";
 import getDirectories from "./getDirectories";
-import createDBLoader from "./createDBLoader";
-import State from "./State";
+import Feature from "../classes/Feature";
 
 /**
  * Takes a bot and adds features to it.
@@ -17,17 +15,18 @@ export default async function initializeFeatures(bot, mainWindow) {
 		const features = directories.map(async directory => {
 			const path = resolve(directory);
 
-			const feature = require(path).default;
-			const featureData = await feature({
+			const ExtendedFeature = await require(path).default(Feature);
+			const feature = new ExtendedFeature({
 				bot,
-				ipcMain,
-				loadDB: createDBLoader(join(path, "index.db")),
-				createState: initialState => new State(initialState),
-				sendToRenderer
+				dbPath: join(path, "index.db")
 			});
 
+			bot.on("chat", feature.onChat);
+
 			return {
-				...featureData,
+				name: feature.name,
+				icon: feature.icon,
+				prefix: feature.ipcMain.prefix,
 				react: join(path, "react.js")
 			};
 		});
