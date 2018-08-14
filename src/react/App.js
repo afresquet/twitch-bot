@@ -25,7 +25,7 @@ const styles = {
 
 export default class App extends Component {
 	state = {
-		features: [],
+		features: {},
 		currentFeature: {
 			path: "",
 			prefix: ""

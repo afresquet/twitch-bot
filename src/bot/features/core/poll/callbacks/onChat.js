@@ -1,4 +1,4 @@
-import messageParser from "../../../helpers/messageParser";
+import messageParser from "../../../../helpers/messageParser";
 import { loadSettings } from "../helpers/db";
 import clamp from "../helpers/clamp";
 

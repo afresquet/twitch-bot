@@ -1,5 +1,5 @@
-import messageParser from "../../helpers/messageParser";
-import isMod from "../../helpers/isMod";
+import messageParser from "../../../helpers/messageParser";
+import isMod from "../../../helpers/isMod";
 import { addQuote, findQuote } from "./helpers/db";
 
 export default Feature =>

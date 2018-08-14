@@ -11,24 +11,49 @@ const SideBar = ({ features, showFeatureUI, ...props }) => (
 
 		<Divider />
 
-		{features.map(({ name, icon, react, prefix }) => (
-			<ListButton
-				text={name}
-				icon={icon}
-				onClick={showFeatureUI(react, prefix)}
-				key={name}
-			/>
-		))}
+		{features.core &&
+			features.core.map(({ name, icon, react, prefix }) => (
+				<ListButton
+					text={name}
+					icon={icon}
+					onClick={showFeatureUI(react, prefix)}
+					key={name}
+				/>
+			))}
+
+		<Divider />
+
+		{features.addons &&
+			features.addons.map(({ name, icon, react, prefix }) => (
+				<ListButton
+					text={name}
+					icon={icon}
+					onClick={showFeatureUI(react, prefix)}
+					key={name}
+				/>
+			))}
 	</List>
 );
 
 SideBar.propTypes = {
-	features: PropTypes.arrayOf(
-		PropTypes.shape({
-			name: PropTypes.string.isRequired,
-			react: PropTypes.string.isRequired
-		}).isRequired
-	).isRequired,
+	features: PropTypes.shape({
+		core: PropTypes.arrayOf(
+			PropTypes.shape({
+				name: PropTypes.string.isRequired,
+				icon: PropTypes.string.isRequired,
+				react: PropTypes.string.isRequired,
+				prefix: PropTypes.string.isRequired
+			}).isRequired
+		).isRequired,
+		addons: PropTypes.arrayOf(
+			PropTypes.shape({
+				name: PropTypes.string.isRequired,
+				icon: PropTypes.string.isRequired,
+				react: PropTypes.string.isRequired,
+				prefix: PropTypes.string.isRequired
+			}).isRequired
+		).isRequired
+	}).isRequired,
 	showFeatureUI: PropTypes.func.isRequired
 };
 

@@ -1,0 +1,26 @@
+{
+	"Gryffindor": [
+		"GRYFFINDOR!",
+		"you might belong in Gryffindor where dwell the brave at heart. Their daring nerve and chivalry set Gryffindors apart.",
+		"courage, bravery, loyalty, nerve, chivalry... you are a GRYFFINDOR!",
+		"do what is right, Gryffindor."
+	],
+	"Hufflepuff": [
+		"HUFFLEPUFF!",
+		"you might belong in Hufflepuff, where they are just and loyal, those patient Hufflepuffs are true and unafraid of toil.",
+		"hard work, tolerance, loyalty, fair play... you are a HUFFLEPUFF!",
+		"do what is nice, Hufflepuff."
+	],
+	"Ravenclaw": [
+		"RAVENCLAW!",
+		"you might belong in Ravenclaw, if you've a ready mind, where those of wit and learning will always find their kind.",
+		"ambition, cunning, leadership, resourcefulness... you are a RAVENCLAW!",
+		"do what is wise, Ravenclaw."
+	],
+	"Slytherin": [
+		"SLYTHERIN!",
+		"you might belong in Slytherin, you'll make your real friends those cunning folks, use any means to achieve their ends.",
+		"intelligence, creativity, learning, wit... you are a SLYTHERIN!",
+		"do what is necessary, Slytherin."
+	]
+}

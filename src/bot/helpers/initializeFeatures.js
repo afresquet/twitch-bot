@@ -10,28 +10,37 @@ export default async function initializeFeatures(bot, mainWindow) {
 	try {
 		const sendToRenderer = (...args) => mainWindow.webContents.send(...args);
 
-		const directories = await getDirectories(`${__dirname}/../features`);
+		const groups = await Promise.all([
+			getDirectories(`${__dirname}/../features/core`),
+			getDirectories(`${__dirname}/../features/addons`)
+		]);
 
-		const features = directories.map(async directory => {
-			const path = resolve(directory);
+		const features = groups.map(async directories =>
+			Promise.all(
+				directories.map(async directory => {
+					const path = resolve(directory);
 
-			const ExtendedFeature = await require(path).default(Feature);
-			const feature = new ExtendedFeature({
-				bot,
-				dbPath: join(path, "index.db")
-			});
+					const ExtendedFeature = await require(path).default(Feature);
+					const feature = new ExtendedFeature({
+						bot,
+						dbPath: join(path, "index.db")
+					});
 
-			bot.on("chat", feature.onChat);
+					bot.on("chat", feature.onChat);
 
-			return {
-				name: feature.name,
-				icon: feature.icon,
-				prefix: feature.ipcMain.prefix,
-				react: join(path, "react.js")
-			};
-		});
+					return {
+						name: feature.name,
+						icon: feature.icon,
+						prefix: feature.ipcMain.prefix,
+						react: join(path, "react.js")
+					};
+				})
+			)
+		);
 
-		sendToRenderer("sendFeatures", await Promise.all(features));
+		const [core, addons] = await Promise.all(features);
+
+		sendToRenderer("sendFeatures", { core, addons });
 
 		return features;
 	} catch (e) {
