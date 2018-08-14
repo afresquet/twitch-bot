@@ -31,7 +31,7 @@ export default class App extends Component {
 
 	componentDidMount() {
 		ipcRenderer.send("requestFeatures");
-		ipcRenderer.on("sendFeatures", (e, features) =>
+		ipcRenderer.once("sendFeatures", (e, features) =>
 			this.setState({ features })
 		);
 	}

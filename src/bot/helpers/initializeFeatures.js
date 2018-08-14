@@ -8,8 +8,10 @@ import State from "./State";
  * Takes a bot and adds features to it.
  * @param {Bot} bot The bot to modify.
  */
-export default async function initializeFeatures(bot) {
+export default async function initializeFeatures(bot, mainWindow) {
 	try {
+		const sendToRenderer = (...args) => mainWindow.webContents.send(...args);
+
 		const directories = await getDirectories(`${__dirname}/../features`);
 
 		const features = directories.map(async directory => {
@@ -18,8 +20,10 @@ export default async function initializeFeatures(bot) {
 			const feature = require(path).default;
 			const featureData = await feature({
 				bot,
+				ipcMain,
 				loadDB: createDBLoader(join(path, "index.db")),
-				createState: initialState => new State(initialState)
+				createState: initialState => new State(initialState),
+				sendToRenderer
 			});
 
 			return {
@@ -28,10 +32,12 @@ export default async function initializeFeatures(bot) {
 			};
 		});
 
-		ipcMain.on("requestFeatures", async e =>
-			e.sender.send("sendFeatures", await Promise.all(features))
-		);
+		sendToRenderer("sendFeatures", await Promise.all(features));
+
+		return features;
 	} catch (e) {
 		console.log(e);
+
+		return false;
 	}
 }
