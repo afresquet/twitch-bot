@@ -2,7 +2,13 @@ import { ipcMain, BrowserWindow } from "electron";
 
 export default class MainProcess {
 	constructor() {
-		this.prefix = "abcde";
+		this.prefix = MainProcess.nextPrefix;
+	}
+
+	static prefixCounter = -1;
+	static get nextPrefix() {
+		MainProcess.prefixCounter += 1;
+		return MainProcess.prefixCounter;
 	}
 
 	on = (channel, listener) => ipcMain.on(`${this.prefix}-${channel}`, listener);
