@@ -40,7 +40,7 @@ class Answer extends Component {
 							placeholder="Edit answer"
 							value={newAnswer === null ? answer : newAnswer}
 							onChange={this.onChange}
-							style={{ width: "100%" }}
+							fullWidth
 						/>
 					)}
 				</TableCell>

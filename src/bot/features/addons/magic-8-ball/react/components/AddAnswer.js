@@ -31,6 +31,7 @@ class AddAnswer extends Component {
 					value={newAnswer}
 					placeholder="New answer"
 					onChange={this.onChange}
+					fullWidth
 				/>
 
 				<Button onClick={this.addAnswer}>Add answer</Button>
