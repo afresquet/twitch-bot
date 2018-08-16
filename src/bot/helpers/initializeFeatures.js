@@ -1,6 +1,7 @@
 import { resolve, join } from "path";
 import getDirectories from "./getDirectories";
 import Feature from "../classes/Feature";
+import Tools from "../classes/Tools";
 
 /**
  * Takes a bot and adds features to it.
@@ -15,6 +16,8 @@ export default async function initializeFeatures(bot, mainWindow) {
 			getDirectories(`${__dirname}/../features/addons`)
 		]);
 
+		const tools = new Tools();
+
 		const features = groups.map(async directories =>
 			Promise.all(
 				directories.map(async directory => {
@@ -23,6 +26,7 @@ export default async function initializeFeatures(bot, mainWindow) {
 					const ExtendedFeature = await require(path).default(Feature);
 					const feature = new ExtendedFeature({
 						bot,
+						tools,
 						dbPath: join(path, "index.db")
 					});
 

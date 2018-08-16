@@ -1,5 +1,3 @@
-import messageParser from "../../../helpers/messageParser";
-import isMod from "../../../helpers/isMod";
 import { addQuote, findQuote } from "./helpers/db";
 
 export default Feature =>
@@ -18,14 +16,17 @@ export default Feature =>
 			try {
 				if (self) return;
 
-				const { command, rest, option, restAfterOption } = messageParser(
-					message
-				);
+				const {
+					command,
+					rest,
+					option,
+					restAfterOption
+				} = this.tools.messageParser(message);
 
 				if (command !== "!quote") return;
 
 				if (option === "add") {
-					if (!isMod(userstate) || !rest) return;
+					if (!this.tools.isMod(userstate) || !rest) return;
 
 					const number = await addQuote(this.db, restAfterOption);
 

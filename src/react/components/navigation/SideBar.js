@@ -42,19 +42,26 @@ SideBar.propTypes = {
 				name: PropTypes.string.isRequired,
 				icon: PropTypes.string.isRequired,
 				react: PropTypes.string.isRequired,
-				prefix: PropTypes.string.isRequired
+				prefix: PropTypes.number.isRequired
 			}).isRequired
-		).isRequired,
+		),
 		addons: PropTypes.arrayOf(
 			PropTypes.shape({
 				name: PropTypes.string.isRequired,
 				icon: PropTypes.string.isRequired,
 				react: PropTypes.string.isRequired,
-				prefix: PropTypes.string.isRequired
+				prefix: PropTypes.number.isRequired
 			}).isRequired
-		).isRequired
-	}).isRequired,
+		)
+	}),
 	showFeatureUI: PropTypes.func.isRequired
+};
+
+SideBar.defaultProps = {
+	features: {
+		core: [],
+		addons: []
+	}
 };
 
 export default SideBar;

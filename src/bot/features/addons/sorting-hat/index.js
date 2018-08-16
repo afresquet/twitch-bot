@@ -1,5 +1,4 @@
-import messageParser from "../../../helpers/messageParser";
-import { seededInt, randomInt } from "./helpers/random";
+import seedrandom from "seedrandom";
 import quotesJSON from "./quotes.json";
 
 export default Feature =>
@@ -17,14 +16,17 @@ export default Feature =>
 		onChat = (channel, { username, "user-id": userId }, message, self) => {
 			if (self) return;
 
-			const { command, rest: seed } = messageParser(message);
+			const { command, rest: seed } = this.tools.messageParser(message);
 
 			if (command !== "!sortinghat") return;
 
-			const house = seededInt(seed || userId, this.quotes.length);
+			const house = this.seededInt(seed || userId, this.quotes.length);
 			const houseQuotes = this.quotes[house];
-			const chosenQuote = houseQuotes[randomInt(houseQuotes.length)];
+			const chosenQuote = houseQuotes[this.tools.randomInt(houseQuotes.length)];
 
 			this.bot.say(channel, `${seed || username} ${chosenQuote}`);
 		};
+
+		seededInt = (seed, range = 10) =>
+			Math.floor(seedrandom(seed)() * Math.floor(range));
 	};

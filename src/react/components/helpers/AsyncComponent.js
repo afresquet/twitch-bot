@@ -14,7 +14,7 @@ const AsyncComponent = ({ path, prefix, ...props }) => {
 
 AsyncComponent.propTypes = {
 	path: PropTypes.string.isRequired,
-	prefix: PropTypes.string.isRequired
+	prefix: PropTypes.number.isRequired
 };
 
 export default AsyncComponent;
