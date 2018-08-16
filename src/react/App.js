@@ -20,7 +20,10 @@ const styles = {
 		WebkitUserSelect: "none"
 	},
 	sideBar: { height: `calc(100vh - ${topBarHeight}px)`, overflowY: "scroll" },
-	main: { height: `calc(100vh - ${topBarHeight}px)`, overflowY: "scroll" }
+	main: {
+		height: `calc(100vh - ${topBarHeight}px)`,
+		width: `calc(100vw - ${sideBarWidth}px)`
+	}
 };
 
 export default class App extends Component {

@@ -30,13 +30,13 @@ export default async function initializeFeatures(bot, mainWindow) {
 						dbPath: join(path, "index.db")
 					});
 
-					bot.on("chat", feature.onChat);
+					if (feature.onChat.length) bot.on("chat", feature.onChat);
 
 					return {
 						name: feature.name,
 						icon: feature.icon,
 						prefix: feature.ipcMain.prefix,
-						react: join(path, "react.js")
+						react: join(path, "react")
 					};
 				})
 			)
