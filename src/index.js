@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import installExtension, {
 	REACT_DEVELOPER_TOOLS
 } from "electron-devtools-installer";
@@ -15,40 +15,45 @@ if (isDevMode) enableLiveReload({ strategy: "react-hmr" });
 
 const createWindow = async () => {
 	mainWindow = new BrowserWindow({
-		width: 800,
-		height: 600
+		minWidth: 800,
+		minHeight: 600
 	});
 
 	mainWindow.loadURL(`file://${__dirname}/react/index.html`);
 
-	if (isDevMode) await installExtension(REACT_DEVELOPER_TOOLS);
+	if (isDevMode) {
+		await installExtension(REACT_DEVELOPER_TOOLS);
+		mainWindow.webContents.openDevTools();
+	}
 
 	mainWindow.on("closed", () => {
 		mainWindow = null;
 	});
 };
 
+const sendFeatures = async () =>
+	features && mainWindow.webContents.send("features", features);
+
 app.on("ready", async () => {
-	await createWindow();
+	try {
+		[bot, features] = await loadBot();
 
-	await new Promise(resolve =>
-		mainWindow.webContents.on("did-finish-load", resolve)
-	);
+		await Promise.all([createWindow(), bot.connect()]);
 
-	[bot, features] = await loadBot(mainWindow);
-	await bot.connect();
+		await sendFeatures();
+	} catch ({ message, stack }) {
+		dialog.showErrorBox(message, stack);
+	}
 });
-
-app.on("window-all-closed", () => process.platform !== "darwin" && app.quit());
 
 app.on("activate", async () => {
 	if (mainWindow !== null) return;
 
 	await createWindow();
 
-	await new Promise(resolve =>
-		mainWindow.webContents.on("did-finish-load", resolve)
-	);
-
-	mainWindow.webContents.send("sendFeatures", await Promise.all(features));
+	await sendFeatures();
 });
+
+ipcMain.on("requestFeatures", sendFeatures);
+
+app.on("window-all-closed", () => process.platform !== "darwin" && app.quit());

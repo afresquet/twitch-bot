@@ -5,27 +5,6 @@ import TopBar from "./components/navigation/TopBar";
 import SideBar from "./components/navigation/SideBar";
 import AsyncComponent from "./components/helpers/AsyncComponent";
 
-const topBarHeight = 65;
-const sideBarWidth = 230;
-
-const styles = {
-	cointainer: {
-		display: "grid",
-		gridTemplateColumns: `${sideBarWidth}px auto`
-	},
-	topBar: {
-		gridColumn: "1 / -1",
-		height: topBarHeight,
-		WebkitAppRegion: "drag",
-		WebkitUserSelect: "none"
-	},
-	sideBar: { height: `calc(100vh - ${topBarHeight}px)`, overflowY: "scroll" },
-	main: {
-		height: `calc(100vh - ${topBarHeight}px)`,
-		width: `calc(100vw - ${sideBarWidth}px)`
-	}
-};
-
 export default class App extends Component {
 	state = {
 		features: {},
@@ -37,13 +16,34 @@ export default class App extends Component {
 
 	componentDidMount() {
 		ipcRenderer.send("requestFeatures");
-		ipcRenderer.once("sendFeatures", (e, features) =>
-			this.setState({ features })
-		);
+		ipcRenderer.once("features", (e, features) => this.setState({ features }));
 	}
 
 	showFeatureUI = (path, prefix) => () =>
 		this.setState({ currentFeature: { path, prefix } });
+
+	topBarHeight = 65;
+	sideBarWidth = 230;
+	styles = {
+		cointainer: {
+			display: "grid",
+			gridTemplateColumns: `${this.sideBarWidth}px auto`
+		},
+		topBar: {
+			gridColumn: "1 / -1",
+			height: this.topBarHeight,
+			WebkitAppRegion: "drag",
+			WebkitUserSelect: "none"
+		},
+		sideBar: {
+			height: `calc(100vh - ${this.topBarHeight}px)`,
+			overflowY: "scroll"
+		},
+		main: {
+			height: `calc(100vh - ${this.topBarHeight}px)`,
+			width: `calc(100vw - ${this.sideBarWidth}px)`
+		}
+	};
 
 	render() {
 		const {
@@ -52,17 +52,21 @@ export default class App extends Component {
 		} = this.state;
 
 		return (
-			<div style={styles.cointainer}>
-				<TopBar id="topbar" style={styles.topBar} />
+			<div style={this.styles.cointainer}>
+				<TopBar id="topbar" style={this.styles.topBar} />
 
 				<SideBar
 					features={features}
 					showFeatureUI={this.showFeatureUI}
-					style={styles.sideBar}
+					style={this.styles.sideBar}
 				/>
 
 				{path && (
-					<AsyncComponent path={path} prefix={prefix} style={styles.main} />
+					<AsyncComponent
+						path={path}
+						prefix={prefix}
+						style={this.styles.main}
+					/>
 				)}
 			</div>
 		);

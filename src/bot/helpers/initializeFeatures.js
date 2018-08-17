@@ -7,10 +7,8 @@ import Tools from "../classes/Tools";
  * Takes a bot and adds features to it.
  * @param {Bot} bot The bot to modify.
  */
-export default async function initializeFeatures(bot, mainWindow) {
+export default async function initializeFeatures(bot) {
 	try {
-		const sendToRenderer = (...args) => mainWindow.webContents.send(...args);
-
 		const groups = await Promise.all([
 			getDirectories(`${__dirname}/../features/core`),
 			getDirectories(`${__dirname}/../features/addons`)
@@ -44,12 +42,8 @@ export default async function initializeFeatures(bot, mainWindow) {
 
 		const [core, addons] = await Promise.all(features);
 
-		sendToRenderer("sendFeatures", { core, addons });
-
-		return features;
-	} catch (e) {
-		console.log(e);
-
-		return false;
+		return { core, addons };
+	} catch (err) {
+		throw err;
 	}
 }

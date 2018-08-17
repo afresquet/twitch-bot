@@ -11,7 +11,11 @@ const PollStats = ({ poll, ...props }) => {
 		<div {...props}>
 			<Card>
 				<CardContent>
-					{poll.question && (
+					{!poll.question ? (
+						<Typography gutterBottom variant="display1" align="center">
+							No polls have been done yet
+						</Typography>
+					) : (
 						<div>
 							<Typography gutterBottom variant="display1" align="center">
 								{poll.active
