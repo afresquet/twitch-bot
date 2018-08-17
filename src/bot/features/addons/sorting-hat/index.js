@@ -3,15 +3,10 @@ import quotesJSON from "./quotes.json";
 
 export default Feature =>
 	class SortingHat extends Feature {
-		constructor(settings) {
-			super({
-				name: "Sorting Hat",
-				icon: "Visibility",
-				...settings
-			});
+		static featureName = "Sorting Hat";
+		static featureIcon = "Visibility";
 
-			this.quotes = Object.values(quotesJSON);
-		}
+		quotes = Object.values(quotesJSON);
 
 		onChat = (channel, { username, "user-id": userId }, message, self) => {
 			if (self) return;

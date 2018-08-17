@@ -2,15 +2,10 @@ import { addQuote, findQuote } from "./helpers/db";
 
 export default Feature =>
 	class Quotes extends Feature {
-		constructor(settings) {
-			super({
-				name: "Quotes",
-				icon: "ChatBubbleOutline",
-				...settings
-			});
+		static featureName = "Quotes";
+		static featureIcon = "ChatBubbleOutline";
 
-			this.db.loadDatabase();
-		}
+		onInitialize = () => this.db.loadDatabase();
 
 		onChat = async (channel, userstate, message, self) => {
 			try {

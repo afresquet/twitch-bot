@@ -1,14 +1,9 @@
 export default Feature =>
 	class Troll extends Feature {
-		constructor(settings) {
-			super({
-				name: "Troll",
-				icon: "Whatshot",
-				...settings
-			});
+		static featureName = "Troll";
+		static featureIcon = "Whatshot";
 
-			this.words = ["I'm", "I’m", "Im", "I am"];
-		}
+		words = ["I'm", "I’m", "Im", "I am"];
 
 		parseString = string => {
 			const newString = string.replace(this.regex, "");

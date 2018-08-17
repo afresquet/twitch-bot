@@ -2,29 +2,26 @@ import { loadSettings, editSettings } from "./helpers/db";
 
 export default Feature =>
 	class Poll extends Feature {
-		constructor(settings) {
-			const initialState = {
-				poll: {
-					active: false,
-					question: "",
-					options: {},
-					voters: []
-				}
-			};
+		static featureName = "Poll";
+		static featureIcon = "Assignment";
 
-			super({
-				name: "Poll",
-				icon: "Assignment",
-				initialState,
-				...settings
-			});
+		initialState = {
+			poll: {
+				active: false,
+				question: "",
+				options: {},
+				voters: []
+			}
+		};
 
-			this.initialState = initialState;
+		state = this.initialState;
+
+		onInitialize = () => {
 			this.db.loadDatabase();
 
 			this.ipcMain.on("load-data", this.onLoadData);
 			this.ipcMain.on("update-settings", this.onUpdateSettings);
-		}
+		};
 
 		onLoadData = async () => {
 			const { _id, ...settings } = await loadSettings(this.db);

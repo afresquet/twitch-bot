@@ -4,6 +4,7 @@ import installExtension, {
 } from "electron-devtools-installer";
 import { enableLiveReload } from "electron-compile";
 import loadBot from "./bot";
+import { addFeature, validateFeature } from "./bot/helpers/features";
 
 let bot;
 let features;
@@ -57,3 +58,23 @@ app.on("activate", async () => {
 ipcMain.on("requestFeatures", sendFeatures);
 
 app.on("window-all-closed", () => process.platform !== "darwin" && app.quit());
+
+ipcMain.on("new-feature", async (e, path) => {
+	try {
+		const name = await validateFeature(path);
+
+		e.sender.send("new-feature-response", name);
+
+		ipcMain.once("new-feature-confirmation", async (_, confirmed) => {
+			if (!confirmed) return;
+
+			const feature = await addFeature(bot, path, true);
+
+			features.addons.push(feature);
+
+			await sendFeatures();
+		});
+	} catch ({ message, stack }) {
+		dialog.showErrorBox(message, stack);
+	}
+});

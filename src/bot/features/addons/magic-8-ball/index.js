@@ -2,13 +2,12 @@ import { getAnswers, addAnswer, deleteAnswer, editAnswer } from "./helpers/db";
 
 export default Feature =>
 	class Magic8Ball extends Feature {
-		constructor(settings) {
-			super({
-				name: "Magic 8-Ball",
-				icon: "GroupWork",
-				...settings
-			});
+		static featureName = "Magic 8-Ball";
+		static featureIcon = "GroupWork";
 
+		options = ["add", "edit", "delete", "list"];
+
+		onInitialize = () => {
 			this.db.loadDatabase();
 
 			this.ipcMain.on("get-answers", () => this.manageAnswers(getAnswers));
@@ -21,9 +20,7 @@ export default Feature =>
 			this.ipcMain.on("delete-answer", (_, answer) =>
 				this.manageAnswers(deleteAnswer, answer)
 			);
-		}
-
-		options = ["add", "edit", "delete", "list"];
+		};
 
 		onChat = async (channel, userstate, message, self) => {
 			try {

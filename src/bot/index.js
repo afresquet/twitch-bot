@@ -1,6 +1,6 @@
 import keytar from "keytar";
 import createClient from "./client";
-import initializeFeatures from "./helpers/initializeFeatures";
+import { initializeFeatures } from "./helpers/features";
 
 export default async function loadBot() {
 	try {

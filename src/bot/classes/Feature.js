@@ -1,20 +1,20 @@
-import Datastore from "nedb";
 import MainProcess from "./MainProcess";
+import Tools from "./Tools";
 
 export default class Feature {
-	constructor({ name, icon, initialState = {}, bot, dbPath, tools }) {
-		this.name = name;
-		this.icon = icon;
-
+	constructor({ bot, db }) {
 		this.bot = bot;
-
-		this.db = new Datastore(dbPath);
-		this.state = initialState;
-
-		this.ipcMain = new MainProcess();
-
-		this.tools = tools;
+		this.db = db;
 	}
+
+	static featureName = "No Name Feature";
+	static featureIcon = "ReportProblem";
+
+	state = {};
+
+	ipcMain = new MainProcess();
+
+	tools = new Tools();
 
 	updateState = updates => {
 		this.state = {
@@ -22,6 +22,8 @@ export default class Feature {
 			...updates
 		};
 	};
+
+	onInitialize = () => {};
 
 	onChat = () => {};
 }

@@ -1,38 +1,41 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { List, Divider } from "@material-ui/core";
+import Dropzone from "react-dropzone";
 
 import ListButton from "../buttons/ListButton";
 
-const SideBar = ({ features, showFeatureUI, ...props }) => (
-	<List component="nav" {...props}>
-		<ListButton text="Home" icon="Home" />
-		<ListButton text="Settings" icon="Build" />
+const SideBar = ({ features, showFeatureUI, onDrop, ...props }) => (
+	<Dropzone disableClick multiple={false} {...props} onDrop={onDrop}>
+		<List component="nav" {...props}>
+			<ListButton text="Home" icon="Home" />
+			<ListButton text="Settings" icon="Build" />
 
-		<Divider />
+			<Divider />
 
-		{features.core &&
-			features.core.map(({ name, icon, react, prefix }) => (
-				<ListButton
-					text={name}
-					icon={icon}
-					onClick={showFeatureUI(react, prefix)}
-					key={name}
-				/>
-			))}
+			{features.core &&
+				features.core.map(({ name, icon, react, prefix }) => (
+					<ListButton
+						text={name}
+						icon={icon}
+						onClick={showFeatureUI(react, prefix)}
+						key={name}
+					/>
+				))}
 
-		<Divider />
+			<Divider />
 
-		{features.addons &&
-			features.addons.map(({ name, icon, react, prefix }) => (
-				<ListButton
-					text={name}
-					icon={icon}
-					onClick={showFeatureUI(react, prefix)}
-					key={name}
-				/>
-			))}
-	</List>
+			{features.addons &&
+				features.addons.map(({ name, icon, react, prefix }) => (
+					<ListButton
+						text={name}
+						icon={icon}
+						onClick={showFeatureUI(react, prefix)}
+						key={name}
+					/>
+				))}
+		</List>
+	</Dropzone>
 );
 
 SideBar.propTypes = {
@@ -54,7 +57,8 @@ SideBar.propTypes = {
 			}).isRequired
 		)
 	}),
-	showFeatureUI: PropTypes.func.isRequired
+	showFeatureUI: PropTypes.func.isRequired,
+	onDrop: PropTypes.func.isRequired
 };
 
 SideBar.defaultProps = {
