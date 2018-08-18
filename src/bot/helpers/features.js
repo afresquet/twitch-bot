@@ -2,6 +2,7 @@ import { resolve, join } from "path";
 import { ncp } from "ncp";
 import Datastore from "nedb";
 import { getDirectories, isDirectory } from "./directories";
+import randomHash from "./randomHash";
 import Feature from "../classes/Feature";
 
 export async function validateFeature(path) {
@@ -17,20 +18,26 @@ export async function validateFeature(path) {
 
 export function moveFeature(from) {
 	return new Promise((res, rej) => {
-		const splitPath = from.split("/");
+		try {
+			const hash = randomHash(5);
 
-		const to = `${__dirname}/../features/addons/${
-			splitPath[splitPath.length - 1]
-		}`;
+			const splitPath = from.split("/");
 
-		ncp(from, to, err => {
-			if (err) {
-				rej(err);
-				return;
-			}
+			const to = `${__dirname}/../features/addons/${hash}-${
+				splitPath[splitPath.length - 1]
+			}`;
 
-			res(to);
-		});
+			ncp(from, to, err => {
+				if (err) {
+					rej(err);
+					return;
+				}
+
+				res(to);
+			});
+		} catch (err) {
+			rej(err);
+		}
 	});
 }
 
