@@ -1,6 +1,7 @@
 import { resolve, join } from "path";
 import { ncp } from "ncp";
 import Datastore from "nedb";
+import app from "../../electron/AppState";
 import { getDirectories, isDirectory } from "./directories";
 import randomHash from "./randomHash";
 import Feature from "../classes/Feature";
@@ -41,7 +42,7 @@ export function moveFeature(from) {
 	});
 }
 
-export async function addFeature(bot, originalPath, move = false) {
+export async function addFeature(originalPath, move = false) {
 	const path = move ? await moveFeature(originalPath) : originalPath;
 
 	const ExtendedFeature = await require(path).default(Feature);
@@ -52,13 +53,13 @@ export async function addFeature(bot, originalPath, move = false) {
 		};
 
 	const feature = new ExtendedFeature({
-		bot,
+		bot: app.bot,
 		db: new Datastore(join(path, "index.db"))
 	});
 
 	feature.onInitialize();
 
-	if (feature.onChat.length) bot.on("chat", feature.onChat);
+	if (feature.onChat.length) app.bot.on("chat", feature.onChat);
 
 	return {
 		name: ExtendedFeature.featureName,
@@ -68,11 +69,7 @@ export async function addFeature(bot, originalPath, move = false) {
 	};
 }
 
-/**
- * Takes a bot and adds features to it.
- * @param {Bot} bot The bot to modify.
- */
-export async function initializeFeatures(bot) {
+export async function initializeFeatures() {
 	try {
 		const groups = await Promise.all([
 			getDirectories(`${__dirname}/../features/core`),
@@ -84,7 +81,7 @@ export async function initializeFeatures(bot) {
 				directories.map(async directory => {
 					const path = resolve(directory);
 
-					return addFeature(bot, path);
+					return addFeature(path);
 				})
 			)
 		);

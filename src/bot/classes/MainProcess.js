@@ -1,4 +1,5 @@
-import { ipcMain, BrowserWindow } from "electron";
+import { ipcMain } from "electron";
+import app from "../../electron/AppState";
 
 export default class MainProcess {
 	static prefixCounter = -1;
@@ -20,9 +21,6 @@ export default class MainProcess {
 	removeAllListeners = channel =>
 		ipcMain.removeAllListeners(channel ? `${this.prefix}-${channel}` : null);
 
-	send = (channel, ...args) => {
-		const [window] = BrowserWindow.getAllWindows();
-
-		window.webContents.send(`${this.prefix}-${channel}`, ...args);
-	};
+	send = (channel, ...args) =>
+		app.mainWindow.webContents.send(`${this.prefix}-${channel}`, ...args);
 }
