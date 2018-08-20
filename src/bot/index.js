@@ -1,4 +1,5 @@
 import keytar from "keytar";
+import state from "../electron/AppState";
 import createClient from "./client";
 import { initializeFeatures } from "./helpers/features";
 
@@ -15,7 +16,8 @@ export default async function loadBot() {
 			bot.action(userCredentials.account, "is up and running...")
 		);
 
-		return [bot, features];
+		state.set("bot", bot);
+		state.set("features", features);
 	} catch (err) {
 		throw err;
 	}
