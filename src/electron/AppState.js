@@ -4,9 +4,8 @@ import installExtension, {
 	REACT_DEVELOPER_TOOLS
 } from "electron-devtools-installer";
 import { enableLiveReload } from "electron-compile";
+import Bot from "../bot";
 import setupIPCMain from "./ipcMain";
-import createBot from "../bot";
-import { initializeFeatures } from "../bot/helpers/features";
 import isDevMode from "./helpers/isDevMode";
 
 if (isDevMode) enableLiveReload({ strategy: "react-hmr" });
@@ -14,11 +13,14 @@ if (isDevMode) enableLiveReload({ strategy: "react-hmr" });
 export class AppState {
 	mainWindow = null;
 	bot = null;
-	features = null;
 
 	onStartUp = async () => {
 		try {
-			await this.loadBot();
+			const [userCredentials] = await keytar.findCredentials("TwitchBot_User");
+			const [botCredentials] = await keytar.findCredentials("TwitchBot_Bot");
+
+			this.bot = new Bot(userCredentials, botCredentials);
+			await this.bot.initialize();
 
 			setupIPCMain();
 
@@ -58,34 +60,10 @@ export class AppState {
 		this.mainWindow = null;
 	};
 
-	loadBot = async () => {
-		try {
-			const [userCredentials] = await keytar.findCredentials("TwitchBot_User");
-			const [botCredentials] = await keytar.findCredentials("TwitchBot_Bot");
-
-			this.bot = createBot(userCredentials, botCredentials);
-			this.features = await initializeFeatures();
-
-			this.bot.on("connected", () =>
-				this.bot.action(userCredentials.account, "is up and running...")
-			);
-
-			this.bot.connect();
-		} catch (err) {
-			throw err;
-		}
-	};
-
-	addFeature = feature => {
-		if (!this.features || !this.features.addons) return;
-
-		this.features.addons.push(feature);
-	};
-
 	sendFeatures = () => {
-		if (!this.features) return;
+		if (!this.bot.features) return;
 
-		this.mainWindow.webContents.send("features", this.features);
+		this.mainWindow.webContents.send("features", this.bot.features);
 	};
 }
 
