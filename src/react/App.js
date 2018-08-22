@@ -19,10 +19,10 @@ export default class App extends Component {
 		}
 	};
 
-	componentDidMount() {
+	componentDidMount = () => {
 		ipcRenderer.send("requestFeatures");
 		ipcRenderer.on("features", (_, features) => this.setState({ features }));
-	}
+	};
 
 	componentWillUnmount = () => ipcRenderer.removeAllListeners("features");
 

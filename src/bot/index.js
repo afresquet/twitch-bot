@@ -5,6 +5,7 @@ import { ncp } from "ncp";
 import Feature from "./classes/Feature";
 import { getDirectories, isDirectory } from "./helpers/directories";
 import randomHash from "./helpers/randomHash";
+import PublicClient from "./classes/PublicClient";
 
 export default class Bot extends Client {
 	constructor(userData, botData) {
@@ -20,9 +21,9 @@ export default class Bot extends Client {
 			},
 			channels: [userData.account]
 		});
-
-		this.mainUserChannel = userData.account;
 	}
+
+	publicClient = null;
 
 	features = {
 		core: [],
@@ -31,10 +32,12 @@ export default class Bot extends Client {
 
 	initialize = async () => {
 		try {
+			this.publicClient = new PublicClient(this);
+
 			await this.loadFeatures();
 
 			this.on("connected", () =>
-				this.action(this.mainUserChannel, "is up and running...")
+				this.action(this.opts.channels[0], "is up and running...")
 			);
 
 			this.connect();
@@ -79,7 +82,7 @@ export default class Bot extends Client {
 			});
 
 		const feature = new ExtendedFeature({
-			bot: this,
+			bot: this.publicClient,
 			db: new Datastore(join(path, "index.db"))
 		});
 

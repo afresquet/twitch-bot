@@ -1,4 +1,4 @@
-export default class Tools {
+class Tools {
 	/**
 	 * @description Parses a message and returns different slices of it.
 	 * @param {string} message The message to parse.
@@ -17,7 +17,7 @@ export default class Tools {
 	 * @description Checks whether a given userstate is a mod or not.
 	 * @param {Object} userstate Userstate object.
 	 */
-	isMod = ({ badges: { broadcaster }, mod }) => !!broadcaster || mod;
+	isMod = ({ badges, mod }) => (badges && !!badges.broadcaster) || mod;
 
 	/**
 	 * @description Gives you a random int between a given range.
@@ -33,3 +33,5 @@ export default class Tools {
 	 */
 	clamp = (number, min, max) => Math.min(Math.max(number, min), max);
 }
+
+export default new Tools();
