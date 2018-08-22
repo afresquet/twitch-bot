@@ -1,4 +1,4 @@
-import { getAnswers, addAnswer, deleteAnswer, editAnswer } from "./helpers/db";
+import * as dbMethods from "./helpers/db";
 
 export default Feature =>
 	class Magic8Ball extends Feature {
@@ -8,17 +8,19 @@ export default Feature =>
 		options = ["add", "edit", "delete", "list"];
 
 		onInitialize = () => {
-			this.db.loadDatabase();
+			this.db.loadWithCustomMethods(dbMethods);
 
-			this.ipcMain.on("get-answers", () => this.manageAnswers(getAnswers));
+			this.ipcMain.on("get-answers", () =>
+				this.manageAnswers(this.db.getAnswers)
+			);
 			this.ipcMain.on("new-answer", (_, answer) =>
-				this.manageAnswers(addAnswer, answer)
+				this.manageAnswers(this.db.addAnswer, answer)
 			);
 			this.ipcMain.on("edit-answer", (_, { oldAnswer, newAnswer }) =>
-				this.manageAnswers(editAnswer, oldAnswer, newAnswer)
+				this.manageAnswers(this.db.editAnswer, oldAnswer, newAnswer)
 			);
 			this.ipcMain.on("delete-answer", (_, answer) =>
-				this.manageAnswers(deleteAnswer, answer)
+				this.manageAnswers(this.db.deleteAnswer, answer)
 			);
 		};
 
@@ -33,7 +35,7 @@ export default Feature =>
 				if (command !== "!8ball") return;
 
 				if (!this.options.find(opt => opt === option)) {
-					const answers = await getAnswers(this.db);
+					const answers = await this.db.getAnswers();
 
 					this.bot.say(channel, answers[this.tools.randomInt(answers.length)]);
 
@@ -53,7 +55,7 @@ export default Feature =>
 				if (option === "add") {
 					if (!restAfterOption) return;
 
-					await this.manageAnswers(addAnswer, restAfterOption);
+					await this.manageAnswers(this.db.addAnswer, restAfterOption);
 
 					response = `Added "${restAfterOption}" as an answer.`;
 				} else if (option === "edit") {
@@ -65,7 +67,7 @@ export default Feature =>
 
 					if (Number.isNaN(index) || !newAnswer) return;
 
-					await this.manageAnswers(editAnswer, index, newAnswer);
+					await this.manageAnswers(this.db.editAnswer, index, newAnswer);
 
 					response = `Edited option ${index} to be "${newAnswer}".`;
 				} else if (option === "delete") {
@@ -73,7 +75,7 @@ export default Feature =>
 
 					if (Number.isNaN(index)) return;
 
-					await this.manageAnswers(deleteAnswer, index);
+					await this.manageAnswers(this.db.deleteAnswer, index);
 
 					response = `Deleted option ${index}.`;
 				} else if (option === "list") {
@@ -88,10 +90,10 @@ export default Feature =>
 		};
 
 		manageAnswers = async (callback, ...args) =>
-			this.ipcMain.send("answers", await callback(this.db, ...args));
+			this.ipcMain.send("answers", await callback(...args));
 
 		getAnswersList = async () => {
-			const answers = await getAnswers(this.db);
+			const answers = await this.db.getAnswers();
 
 			return answers.reduce(
 				(acc, answer, i) =>

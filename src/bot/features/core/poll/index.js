@@ -1,4 +1,4 @@
-import { loadSettings, editSettings } from "./helpers/db";
+import * as dbMethods from "./helpers/db";
 
 export default Feature =>
 	class Poll extends Feature {
@@ -17,21 +17,21 @@ export default Feature =>
 		state = this.initialState;
 
 		onInitialize = () => {
-			this.db.loadDatabase();
+			this.db.loadWithCustomMethods(dbMethods);
 
 			this.ipcMain.on("load-data", this.onLoadData);
 			this.ipcMain.on("update-settings", this.onUpdateSettings);
 		};
 
 		onLoadData = async () => {
-			const { _id, ...settings } = await loadSettings(this.db);
+			const { _id, ...settings } = await this.db.loadSettings();
 			const { voters, ...poll } = this.state.poll;
 
 			this.ipcMain.send("data", { poll, settings });
 		};
 
 		onUpdateSettings = async (_, newSettings) => {
-			await editSettings(this.db, newSettings);
+			await this.db.editSettings(newSettings);
 
 			this.ipcMain.send("settings-updated");
 		};
@@ -41,7 +41,7 @@ export default Feature =>
 
 			if (!this.state.poll.active) {
 				if (message === "!poll help") {
-					const settings = await loadSettings(this.db);
+					const settings = await this.db.loadSettings();
 
 					this.bot.say(
 						channel,
@@ -67,7 +67,7 @@ export default Feature =>
 				)
 					return;
 
-				const settings = await loadSettings(this.db);
+				const settings = await this.db.loadSettings();
 
 				const time = this.tools.clamp(
 					parseInt(seconds, 10),

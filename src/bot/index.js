@@ -1,8 +1,8 @@
 import { resolve, join } from "path";
 import { client as Client } from "tmi.js";
-import Datastore from "nedb";
 import { ncp } from "ncp";
 import Feature from "./classes/Feature";
+import Database from "./classes/Database";
 import { getDirectories, isDirectory } from "./helpers/directories";
 import randomHash from "./helpers/randomHash";
 import PublicClient from "./classes/PublicClient";
@@ -83,7 +83,7 @@ export default class Bot extends Client {
 
 		const feature = new ExtendedFeature({
 			bot: this.publicClient,
-			db: new Datastore(join(path, "index.db"))
+			db: new Database(join(path, "index.db"))
 		});
 
 		feature.onInitialize();
