@@ -1,7 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import registerServiceWorker from "./registerServiceWorker";
+import { app as electron } from "electron";
+import app from "./electron/AppState";
 
-ReactDOM.render(<App />, document.getElementById("root"));
-registerServiceWorker();
+electron.on("ready", app.onStartUp);
+
+electron.on("activate", app.createMainWindow);
+
+electron.on(
+	"window-all-closed",
+	() => process.platform !== "darwin" && electron.quit()
+);

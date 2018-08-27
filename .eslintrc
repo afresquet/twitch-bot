@@ -16,12 +16,14 @@
 		"node": true
 	},
 	"rules": {
+		"import/extensions": 0,
+		"import/no-extraneous-dependencies": 0,
+		"import/no-unresolved": [2, { "ignore": ["electron"] }],
+		"linebreak-style": 0,
+		"react/prefer-stateless-function": 0,
 		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-		"react/no-array-index-key": "off",
-		"no-underscore-dangle": [1, { "allow": ["_id"] }],
-		"jsx-a11y/anchor-is-valid": [1, { "allow": ["Link"] }],
-		"no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-		"no-restricted-syntax": "off",
-		"no-bitwise": ["error", { "int32Hint": true }]
+		"jsx-a11y/href-no-hash": 0,
+		"global-require": 0,
+		"import/no-dynamic-require": 0
 	}
 }
